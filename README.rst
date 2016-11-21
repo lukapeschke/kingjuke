@@ -3,7 +3,7 @@ KingJuke
 ========
 
 Youtube jukebox app
-+++++++++++++++++++
+===================
 
 **KingJuke** (short: **KJuke**) is a youtube jukebox application. It allows
 you to host a playlist to which people can submit Youtube videos.
@@ -31,8 +31,8 @@ the playlist theme, etc...
 Installation
 ============
 
-Run `python setup.Py install` to install KingJuke. You will also need the
-`vlc-nox` package.
+Run ``python setup.py install`` to install KingJuke. You will also need the
+``vlc-nox`` package.
 
 Running
 =======
