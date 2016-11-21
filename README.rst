@@ -37,4 +37,4 @@ Run ``python setup.py install`` to install KingJuke. You will also need the
 Running
 =======
 
-To start the app, simply execute `kingjuke-server`.
+To start the app, simply execute ``kingjuke-server``.
