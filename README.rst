@@ -31,7 +31,7 @@ the playlist theme, etc...
 Installation
 ============
 
-Run ``python setup.py install`` to install KingJuke. You will also need the
+Run ``python3 setup.py install`` to install KingJuke. You will also need the
 ``vlc-nox`` package.
 
 Running
