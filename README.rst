@@ -38,3 +38,12 @@ Running
 =======
 
 To start the app, simply execute ``kingjuke-server``.
+
+Client
+======
+
+A command-line client is available here: KingJukeClient_ .
+
+.. Global references and images
+
+.. _KingJukeClient: https://github.com/lukapeschke/kingjukeclient.git
