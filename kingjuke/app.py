@@ -34,7 +34,7 @@ def main():
     api.add_route('/admin/{handler}', play_api.ApiAdmin())
 
     options = {
-        'bind': '{host}:{port}'.format(host='127.0.0.1', port='9090'),
+        'bind': '{host}:{port}'.format(host='0.0.0.0', port='9090'),
         'workers': 1
     }
     KingJukeApp(api, options).run()
