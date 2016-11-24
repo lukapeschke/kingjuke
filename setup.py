@@ -18,5 +18,6 @@ setup(
         'gunicorn',
         'pafy',
         'python-vlc',
+        'youtube-dl'
     ],
 )
