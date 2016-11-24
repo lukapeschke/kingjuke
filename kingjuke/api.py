@@ -73,6 +73,7 @@ class ApiAdmin(BaseHandler):
             'play': playlist.Playlist.play,
             'pause': playlist.Playlist.pause,
             'next': playlist.Playlist.next_song,
+            'theme': playlist.Playlist.set_theme
         }
         if handler not in func_map.keys():
             self.send_full_response(
@@ -83,7 +84,8 @@ class ApiAdmin(BaseHandler):
         else:
             try:
                 self.valid_auth(req)
-                func_map[handler]()
+                req_body = self.get_post_body(req)
+                func_map[handler](req_body)
                 self.send_full_response(resp, 'OK', falcon.HTTP_200)
             except Unauthorized:
                 self.send_full_response(resp, 'Unauthorized', falcon.HTTP_401)

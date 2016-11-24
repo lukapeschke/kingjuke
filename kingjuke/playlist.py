@@ -23,7 +23,7 @@ class Song(object):
         self._stream = (video.getbestaudio(preftype='ogg')
                         or video.getbestaudio())
         self._stream = self._stream.url
-        self._media = Playlist.vlc_inst.media_player_new(self._stream)
+        self._media = Playlist._vlc_inst.media_player_new(self._stream)
         self.set_stop_callback(self.song_end)
         self.voters = {}
 
@@ -119,15 +119,17 @@ class Song(object):
 
 class Playlist(object):
     @classmethod
-    def __init__(cls):
+    def __init__(cls, theme='Anything'):
         cls._playlist = []
         cls._current = None
         cls._playing = False
-        cls.vlc_inst = vlc.Instance()
+        cls._vlc_inst = vlc.Instance()
+        cls.theme = theme
 
     @classmethod
     def get_list(cls, voter=None):
         output = {}
+        output['theme'] = cls.theme
         if cls._current:
             output['first_song'] = cls._current.get_song_info(
                 voter=voter,
@@ -186,6 +188,10 @@ class Playlist(object):
                 break
 
     @classmethod
+    def set_theme(cls, theme='Anything'):
+        cls.theme = theme if (theme and len(theme)) else cls.theme
+
+    @classmethod
     def has_voted(cls, title, voter):
         for song in cls._playlist:
             if title == song.title:
@@ -193,19 +199,19 @@ class Playlist(object):
         return 0
 
     @classmethod
-    def play(cls):
+    def play(cls, *args):
         if cls._current:
             cls.set_playing(True)
             cls._current.play()
 
     @classmethod
-    def pause(cls):
+    def pause(cls, *args):
         if cls._current:
             cls.set_playing(False) if cls._playing else cls.set_playing
             cls._current.pause()
 
     @classmethod
-    def next_song(cls):
+    def next_song(cls, *args):
         if cls._current:
             cls._current.stop()
             cls.set_playing(False)
