@@ -20,7 +20,9 @@ class Song(object):
         self.title = video.title
         self.url = video.watchv_url
         self.length = video.length
-        self._stream = video.getbestaudio(preftype='ogg').url
+        self._stream = (video.getbestaudio(preftype='ogg')
+                        or video.getbestaudio())
+        self._stream = self._stream.url
         self._media = Playlist.vlc_inst.media_player_new(self._stream)
         self.set_stop_callback(self.song_end)
         self.voters = {}
