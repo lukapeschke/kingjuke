@@ -39,11 +39,15 @@ Running
 
 To start the app, simply execute ``kingjuke-server``.
 
-Client
-======
+Clients
+=======
 
 A command-line client is available here: KingJukeClient_ .
 
+An android app_ made by @chaix-adrien.
+
 .. Global references and images
 
-.. _KingJukeClient: https://github.com/lukapeschke/kingjukeclient.git
+.. _KingJukeClient: https://github.com/lukapeschke/kingjukeclient
+
+.. _app: https://github.com/chaix-adrien/KingJukeClient-android
