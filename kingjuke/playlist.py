@@ -1,5 +1,6 @@
 #!/usr/bin/python3
 
+import json
 from time import sleep
 
 import pafy
@@ -15,7 +16,7 @@ class BlackListed(Exception):
 
 
 class Song(object):
-    def __init__(self, video):
+    def __init__(self, video, tags=[]):
         self._score = 0
         self.title = video.title
         self.url = video.watchv_url
@@ -26,6 +27,7 @@ class Song(object):
         self._media = Playlist._vlc_inst.media_player_new(self._stream)
         self.set_stop_callback(self.song_end)
         self.voters = {}
+        self.tags = tags
 
     def __gt__(self, comp):
         if self.get_score() > comp.get_score():
@@ -67,7 +69,8 @@ class Song(object):
             'url': self.url,
             'length': self.length,
             'score': self.get_score(),
-            'has_voted': self.has_voted(voter)
+            'has_voted': self.has_voted(voter),
+            'tags': self.tags
         }
         if first_song:
             output['current_time'] = self.get_current_time()
@@ -81,7 +84,7 @@ class Song(object):
         Playlist.play_song()
 
     @staticmethod
-    def test_song(url, blacklist=None):
+    def test_song(url, blacklist=None, tags=[]):
         try:
             video = pafy.new(url)
             if blacklist:
@@ -119,12 +122,13 @@ class Song(object):
 
 class Playlist(object):
     @classmethod
-    def __init__(cls, theme='Anything'):
+    def __init__(cls, theme='Anything', tags=[]):
         cls._playlist = []
         cls._current = None
         cls._playing = False
         cls._vlc_inst = vlc.Instance()
         cls.theme = theme
+        cls.tags = tags
 
     @classmethod
     def get_list(cls, voter=None):
@@ -162,12 +166,17 @@ class Playlist(object):
             cls._current = None
 
     @classmethod
-    def add_song(cls, video):
-        song = Song(video)
+    def add_song(cls, video, tags='[]'):
+        try:
+            tags = json.loads(tags)
+            assert type(tags) is list
+        except (json.JSONDecodeError, AssertionError):
+            tags = []
+        song = Song(video, tags)
         for i in cls._playlist:
             i.upvote()
         if cls._current:
-            cls._playlist.append(song)
+            cls._playlist.append(song, tags)
         else:
             cls._current = song
 

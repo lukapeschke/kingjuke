@@ -124,16 +124,26 @@ class ApiPlaylist(BaseHandler):
 
     def on_post(self, req, resp):
         """Adds submited URLs to the current playlist."""
-        req_body = self.get_post_body(req)
         try:
-            video = playlist.Song.test_song(req_body)
-            self.send_full_response(resp, 'Accepted', falcon.HTTP_201)
-            self.playlist.add_song(video)
-            self.playlist.play_song()
-        except playlist.InvalidUrl:
-            self.send_full_response(resp, 'Invalid URL', falcon.HTTP_400)
-        except playlist.BlackListed:
-            self.send_full_response(resp, 'Blacklisted song', falcon.HTTP_403)
+            req_body = json.loads(self.get_post_body(req))
+            url = req_body['url']
+            tags = req_body['tags']
+        except:
+            self.send_full_response(resp, 'Invalid Request', falcon.HTTP_400)
+        else:
+            try:
+                video = playlist.Song.test_song(url, tags=tags)
+                self.send_full_response(resp, 'Accepted', falcon.HTTP_201)
+                self.playlist.add_song(video)
+                self.playlist.play_song()
+            except playlist.InvalidUrl:
+                self.send_full_response(resp,
+                                        'Invalid Request',
+                                        falcon.HTTP_400)
+            except playlist.BlackListed:
+                self.send_full_response(resp,
+                                        'Blacklisted song',
+                                        falcon.HTTP_403)
 
 
 class ApiVote(BaseHandler):
