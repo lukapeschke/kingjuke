@@ -73,7 +73,9 @@ class ApiAdmin(BaseHandler):
             'play': playlist.Playlist.play,
             'pause': playlist.Playlist.pause,
             'next': playlist.Playlist.next_song,
-            'theme': playlist.Playlist.set_theme
+            'theme': playlist.Playlist.set_theme,
+            'add_tags': playlist.Playlist.add_tags,
+            'remove_tags': playlist.Playlist.remove_tags,
         }
         if handler not in func_map.keys():
             self.send_full_response(

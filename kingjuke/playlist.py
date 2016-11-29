@@ -134,6 +134,7 @@ class Playlist(object):
     def get_list(cls, voter=None):
         output = {}
         output['theme'] = cls.theme
+        output['authorized_tags'] = cls.tags
         if cls._current:
             output['first_song'] = cls._current.get_song_info(
                 voter=voter,
@@ -239,3 +240,27 @@ class Playlist(object):
                     break
             if to_delete is not None:
                 del cls._playlist[to_delete]
+
+    @classmethod
+    def _add_tag(cls, tag):
+        if tag not in cls.tags:
+            cls.tags.append(tag)
+
+    @classmethod
+    def add_tags(cls, tags=[]):
+        if type(tags) is not list:
+            tags = json.loads(tags)
+        for tag in tags:
+            cls._add_tag(tag)
+
+    @classmethod
+    def _remove_tag(cls, tag):
+        if tag in cls.tags:
+            cls.tags.pop(tag)
+
+    @classmethod
+    def remove_tags(cls, tags=[]):
+        if type(tags) is not list:
+            tags = json.loads(tags)
+        for tag in tags:
+            cls._remove_tag(tag)
