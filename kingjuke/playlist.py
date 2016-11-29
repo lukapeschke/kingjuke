@@ -84,7 +84,7 @@ class Song(object):
         Playlist.play_song()
 
     @staticmethod
-    def test_song(url, blacklist=None):
+    def test_song(url, blacklist=None, tags=[]):
         try:
             video = pafy.new(url)
             if blacklist:
