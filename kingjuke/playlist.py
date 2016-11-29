@@ -256,7 +256,8 @@ class Playlist(object):
     @classmethod
     def _remove_tag(cls, tag):
         if tag in cls.tags:
-            cls.tags.pop(tag)
+            index = cls.tags.index(tag)
+            cls.tags.pop(index)
 
     @classmethod
     def remove_tags(cls, tags=[]):
