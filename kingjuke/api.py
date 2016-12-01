@@ -136,7 +136,7 @@ class ApiPlaylist(BaseHandler):
             try:
                 video = playlist.Song.test_song(url, tags=tags)
                 self.send_full_response(resp, 'Accepted', falcon.HTTP_201)
-                self.playlist.add_song(video)
+                self.playlist.add_song(video, tags)
                 self.playlist.play_song()
             except playlist.InvalidUrl:
                 self.send_full_response(resp,

@@ -169,9 +169,8 @@ class Playlist(object):
     @classmethod
     def add_song(cls, video, tags='[]'):
         try:
-            tags = json.loads(tags)
             assert type(tags) is list
-        except (json.JSONDecodeError, AssertionError):
+        except (AssertionError):
             tags = []
         song = Song(video, tags)
         for i in cls._playlist:
