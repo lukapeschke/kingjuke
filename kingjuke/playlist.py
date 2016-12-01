@@ -177,7 +177,7 @@ class Playlist(object):
         for i in cls._playlist:
             i.upvote()
         if cls._current:
-            cls._playlist.append(song, tags)
+            cls._playlist.append(song)
         else:
             cls._current = song
 
