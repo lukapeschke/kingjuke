@@ -5,12 +5,10 @@ class Palette(object):
             'palette': [
                 "#f0f8ff",
                 "#faebd7",
-                "#00ffff",
                 "#7fffd4",
                 "#f0ffff",
                 "#f5f5dc",
                 "#ffe4c4",
-                "#000000",
                 "#ffebcd",
                 "#0000ff",
                 "#8a2be2",

@@ -6,6 +6,8 @@ from time import sleep
 import pafy
 import vlc
 
+from kingjuke.palette import Palette
+
 
 class InvalidUrl(Exception):
     pass
@@ -129,6 +131,7 @@ class Playlist(object):
         cls._vlc_inst = vlc.Instance()
         cls.theme = theme
         cls.tags = tags
+        cls._tag_palette = Palette()
 
     @classmethod
     def get_list(cls, voter=None):
@@ -243,6 +246,7 @@ class Playlist(object):
     @classmethod
     def _add_tag(cls, tag):
         if tag not in cls.tags:
+            tag = {'name': tag, 'color': cls._tag_palette.get_color()}
             cls.tags.append(tag)
 
     @classmethod
@@ -254,8 +258,9 @@ class Playlist(object):
 
     @classmethod
     def _remove_tag(cls, tag):
-        if tag in cls.tags:
-            index = cls.tags.index(tag)
+        tags = [i['name'] for i in cls.tags]
+        if tag in tags:
+            index = tags.index(tag)
             cls.tags.pop(index)
 
     @classmethod
