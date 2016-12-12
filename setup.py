@@ -14,7 +14,7 @@ setup(
         "console_scripts": ["kingjuke-server=kingjuke.app:main"]
     },
     install_requires=[
-        'falcon',
+        'falcon-cors',
         'gunicorn',
         'pafy',
         'python-vlc',

@@ -1,6 +1,7 @@
 #!/usr/bin/env python3
 
 import falcon
+from falcon_cors import CORS
 import gunicorn.app.base
 
 from kingjuke import api as play_api
@@ -26,7 +27,8 @@ class KingJukeApp(gunicorn.app.base.BaseApplication):
 
 def main():
     to_play = Playlist()
-    api = falcon.API()
+    cors_middleware = CORS(allow_all_origins=True)
+    api = falcon.API(middleware=cors_middleware.middleware)
 
     api.add_route('/jukebox', play_api.BaseHandler())
     api.add_route('/playlist', play_api.ApiPlaylist(to_play))
