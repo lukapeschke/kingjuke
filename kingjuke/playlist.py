@@ -2,6 +2,7 @@
 
 import json
 from time import sleep
+from urllib.request import urlopen
 
 import pafy
 import vlc
@@ -80,6 +81,8 @@ class Song(object):
     @staticmethod
     def song_end(event):
         Playlist.set_playing(False)
+        if len(Playlist._playlist) == 0:
+            Playlist.get_next_vid(Playlist._current.url)
         Playlist.delete_first_song()
         Playlist.play_song()
 
@@ -121,6 +124,16 @@ class Song(object):
 
 
 class Playlist(object):
+    @classmethod
+    def get_next_vid(cls, url):
+        with urlopen(url) as page:
+            html = str(page.read())
+        html=html[html.find('autoplay-bar'):]
+        html=html[html.find('href="')+6:]
+        url="http://www.youtube.com"+html[:html.find('"')]
+        song = Song.test_song(url)
+        cls.add_song(song)
+
     @classmethod
     def __init__(cls, theme='Anything', tags=[]):
         cls._playlist = []
