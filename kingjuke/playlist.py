@@ -237,6 +237,8 @@ class Playlist(object):
         if cls._current:
             cls._current.stop()
             cls.set_playing(False)
+            if len(cls._playlist) == 0:
+                cls.get_next_vid(Playlist._current.url)
             cls.delete_first_song()
             cls.play_song()
 
