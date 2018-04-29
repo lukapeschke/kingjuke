@@ -2,9 +2,9 @@ package main
 
 import (
 	"io/ioutil"
-	"log"
 	"net/http"
 
+	log "github.com/Sirupsen/logrus"
 	"github.com/gorilla/mux"
 )
 
@@ -20,7 +20,6 @@ func putPlaylistHandler(w http.ResponseWriter, r *http.Request) {
 	vars := mux.Vars(r)
 	handler := vars["handler"]
 	handlerFunc := playlistHandlers[handler]
-	log.Printf("handler %v handlerfunc %v", handler, handlerFunc)
 	if handlerFunc == nil {
 		w.WriteHeader(http.StatusNotFound)
 		return

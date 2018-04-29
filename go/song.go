@@ -2,7 +2,6 @@ package main
 
 import (
 	"errors"
-	"log"
 	"os"
 	"os/exec"
 	"time"
@@ -13,6 +12,8 @@ import (
 	"github.com/faiface/beep"
 
 	"github.com/otium/ytdl"
+
+	log "github.com/Sirupsen/logrus"
 )
 
 // Song represents a song of the playlist
@@ -29,17 +30,17 @@ func NewSong(id string) (*Song, error) {
 	var song Song
 	var err error
 
-	log.Printf("Creating song for ID %s", id)
+	log.Infof("Creating song for ID %s", id)
 	song.Vid, err = ytdl.GetVideoInfo(id)
 	if err != nil {
-		log.Printf("Could not fetch video info for %s\n", id)
+		log.Warnf("Could not fetch video info for %s\n", id)
 		return nil, err
 	}
 	song.Name = song.Vid.Title
 	song.AudioFilename = "cache/" + song.Name + ".mp3"
 	song.VideoFilename = "cache/" + song.Name + ".mp4"
 	song.done = false
-	log.Printf("Created song for %s", song.Name)
+	log.Infof("Created song for %s", song.Name)
 	return &song, nil
 }
 
@@ -66,56 +67,56 @@ func (s *Song) GetBestAudio() (ytdl.Format, error) {
 // Download downloads a Song to the File Song.VideoFilename
 func (s *Song) Download() (err error) {
 	if s.audioFileExists() || s.videoFileExists() {
-		log.Printf("Found %s in cache, skipping download\n", s.Name)
+		log.Infof("Found %s in cache, skipping download\n", s.Name)
 		return
 	}
 	format, err := s.GetBestAudio()
 	if err != nil {
-		log.Printf("No best audio found for %s\n", s.Name)
+		log.Warnf("No best audio found for %s\n", s.Name)
 		return
 	}
 	file, err := os.Create(s.VideoFilename)
 	if err != nil {
-		log.Println("Error while creating file ", s.VideoFilename, ":", err)
+		log.Warnln("Error while creating file ", s.VideoFilename, ":", err)
 		return
 	}
 	defer file.Close()
-	log.Printf("Downloading %s to file %s", s.Vid.Title, s.VideoFilename)
+	log.Infof("Downloading %s to file %s", s.Vid.Title, s.VideoFilename)
 	s.Vid.Download(format, file)
-	log.Printf("Finished downloading %s", s.Vid.Title)
+	log.Infof("Finished downloading %s", s.Vid.Title)
 	return
 }
 
 // Convert converts the song to mp3
 func (s *Song) Convert() (err error) {
 	if s.audioFileExists() {
-		log.Printf("Found %s in cache, skipping convert\n", s.Name)
+		log.Infof("Found %s in cache, skipping convert\n", s.Name)
 		return
 	}
 	ffmpegPath, err := exec.LookPath("ffmpeg")
 	if err != nil {
-		log.Println("Error while looking for ffmpeg: ", err)
+		log.Warnln("Error while looking for ffmpeg: ", err)
 		return
 	}
-	log.Printf("Starting conversion for %s", s.Name)
+	log.Infof("Starting conversion for %s", s.Name)
 	cmd := exec.Command(ffmpegPath, "-y", "-i", s.VideoFilename, "-vn", s.AudioFilename)
 	cmd.Run()
-	log.Printf("Converted %s to %s", s.AudioFilename, s.VideoFilename)
+	log.Infof("Converted %s to %s", s.AudioFilename, s.VideoFilename)
 	return
 }
 
 // Play plays the song
 func (s *Song) Play(c chan string) (err error) {
-	log.Printf("Playing %s...\n", s.Name)
+	log.Infof("Playing %s...\n", s.Name)
 	f, err := os.Open(s.AudioFilename)
 	if err != nil {
-		log.Println("Error while opening ", s.AudioFilename, ": ", err)
+		log.Warnln("Error while opening ", s.AudioFilename, ": ", err)
 		return
 	}
 	defer f.Close()
 	stream, format, err := mp3.Decode(f)
 	if err != nil {
-		log.Println("Error while decoding ", s.AudioFilename, ": ", err)
+		log.Warnln("Error while decoding ", s.AudioFilename, ": ", err)
 		return
 	}
 	speaker.Init(format.SampleRate, format.SampleRate.N(time.Second/10))
@@ -129,7 +130,7 @@ func (s *Song) Play(c chan string) (err error) {
 	<-done
 	s.done = true
 	c <- "songFinished"
-	log.Printf("Finished playing %s\n", s.Name)
+	log.Infof("Finished playing %s\n", s.Name)
 	return
 }
 

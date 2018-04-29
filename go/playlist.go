@@ -1,9 +1,9 @@
 package main
 
 import (
-	"fmt"
-	"log"
 	"sync"
+
+	log "github.com/Sirupsen/logrus"
 )
 
 // Playlist represents the current playlist
@@ -35,25 +35,25 @@ func GetPlaylist() *Playlist {
 
 // Lock locks the playlist for read/write access
 func (p *Playlist) Lock() {
-	log.Println("Locking playlist")
+	log.Debug("Locking playlist")
 	p.mu.Lock()
 }
 
 // Unlock unlocks the playlist for read/write access
 func (p *Playlist) Unlock() {
-	log.Println("Unlocking playlist")
+	log.Debug("Unlocking playlist")
 	p.mu.Unlock()
 }
 
 // RLock locks the playlist for read/write access
 func (p *Playlist) RLock() {
-	log.Println("RLocking playlist")
+	log.Debug("RLocking playlist")
 	p.mu.RLock()
 }
 
 // RUnlock unlocks the playlist for read/write access
 func (p *Playlist) RUnlock() {
-	log.Println("RUnlocking playlist")
+	log.Debug("RUnlocking playlist")
 	p.mu.RUnlock()
 }
 
@@ -63,7 +63,7 @@ func (p *Playlist) UnPause() {
 }
 
 func (p *Playlist) unPause() {
-	log.Println("UnPause playlist")
+	log.Debug("UnPause playlist")
 	if p.currentSong != nil {
 		p.currentSong.UnPause()
 	}
@@ -75,7 +75,7 @@ func (p *Playlist) Pause() {
 }
 
 func (p *Playlist) pause() {
-	log.Println("Pause playlist")
+	log.Debug("Pause playlist")
 	if p.currentSong != nil {
 		p.currentSong.Pause()
 	}
@@ -107,7 +107,7 @@ func (p *Playlist) addSong() {
 		song.Download()
 		song.Convert()
 	}()
-	log.Printf("Added %s to the playlist", song.Name)
+	log.Infof("Added %s to the playlist", song.Name)
 }
 
 func (p *Playlist) len() int {
@@ -172,7 +172,7 @@ func (p *Playlist) playlistEventHandler() {
 		if !open {
 			log.Fatal("Playlist channel is not open")
 		}
-		log.Printf("Received instruction %s\n", instruction)
+		log.Infof("Received instruction %s\n", instruction)
 		switch instruction {
 		case "unpause":
 			p.unPause()
@@ -187,7 +187,7 @@ func (p *Playlist) playlistEventHandler() {
 		case "next":
 			p.next()
 		}
-		log.Printf("Executed instruction %s\n", instruction)
+		log.Infof("Executed instruction %s\n", instruction)
 	}
 }
 
