@@ -100,13 +100,16 @@ func (p *Playlist) AddSong(s *Song) {
 
 func (p *Playlist) addSong() {
 	song, _ := <-p.songCh
-	p.Lock()
-	p.songs = append(p.songs, song)
-	p.Unlock()
-	go func() {
+	func() {
 		song.Download()
 		song.Convert()
 	}()
+	p.Lock()
+	p.songs = append(p.songs, song)
+	p.Unlock()
+	if p.currentSong == nil {
+		p.next()
+	}
 	log.Infof("Added %s to the playlist", song.Name)
 }
 
@@ -181,7 +184,7 @@ func (p *Playlist) playlistEventHandler() {
 		case "togglePause":
 			p.togglePause()
 		case "add":
-			p.addSong()
+			go p.addSong()
 		case "songFinished":
 			p.next()
 		case "next":

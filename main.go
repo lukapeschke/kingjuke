@@ -48,6 +48,7 @@ func postPlaylistHandler(w http.ResponseWriter, r *http.Request) {
 	song, err := NewSong(string(id))
 	if err != nil || p.isSongInPlaylist(song.Name) {
 		w.WriteHeader(http.StatusConflict)
+		return
 	}
 	handlerFunc(song)
 }
